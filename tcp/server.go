@@ -17,7 +17,7 @@ type Config struct {
 	Address string
 }
 
-// 监听有信号的服务，绑定端口号和处理请求，阻塞到有停止信号过来
+// ListenAndServeWithSignal 监听有信号的服务，绑定端口号和处理请求，阻塞到有停止信号过来
 func ListenAndServeWithSignal(cfg *Config, handler tcp.Handler) error {
 	closeChan := make(chan struct{})
 	sigCh := make(chan os.Signal)
@@ -50,6 +50,7 @@ func ListenAndServe(listen net.Listener, handler tcp.Handler, closeChan chan str
 
 	// 监听closeChan通道
 	go func() {
+		//  closeChan 在收到系统退出信息时有消息进来
 		<-closeChan
 		logger.Info("shutting down")
 		_ = listen.Close()

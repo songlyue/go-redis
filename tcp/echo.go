@@ -16,6 +16,7 @@ import (
 测试服务是否正常运行
 */
 
+// EchoHandler 维护了一个client的map，还有是否关闭closing字段
 type EchoHandler struct {
 	activeConn sync.Map
 	closing    atomic.Boolean
@@ -33,6 +34,7 @@ func (h *EchoHandler) Handler(ctx context.Context, conn net.Conn) {
 	client := &EchoClient{
 		Conn: conn,
 	}
+	// 设置键的值
 	h.activeConn.Store(client, struct{}{})
 	reader := bufio.NewReader(conn)
 
@@ -47,6 +49,7 @@ func (h *EchoHandler) Handler(ctx context.Context, conn net.Conn) {
 			}
 			return
 		}
+		// 客户端的waitGroup +1
 		client.Waiting.Add(1)
 		b := []byte(msg)
 		_, _ = conn.Write(b)
@@ -67,14 +70,15 @@ func (h *EchoHandler) Close() error {
 	return nil
 }
 
+// EchoClient 一个连接客户端，
 type EchoClient struct {
 	Conn    net.Conn
 	Waiting wait.Wait
 }
 
-// Close close connection
+// Close connection  设置连接的等待时间
 func (c *EchoClient) Close() error {
 	c.Waiting.WaitWithTimeout(10 * time.Second)
-	c.Conn.Close()
+	_ = c.Conn.Close()
 	return nil
 }
