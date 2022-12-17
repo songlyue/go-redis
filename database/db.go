@@ -10,8 +10,9 @@ import (
 
 // DB stores data and execute user's commands
 type DB struct {
-	index int
-	data  dict.Dict
+	index  int
+	data   dict.Dict
+	addAof func(CmdLine)
 }
 
 // ExecFunc is interface for command executor
