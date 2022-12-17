@@ -19,7 +19,7 @@ type OkReply struct {
 var okBytes = []byte("+OK\r\n")
 
 // 返回ok的字节数组
-func (r *OkReply) toBytes() []byte {
+func (r *OkReply) ToBytes() []byte {
 	return okBytes
 }
 

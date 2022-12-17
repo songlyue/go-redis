@@ -162,6 +162,7 @@ func readBody(msg []byte, state *readState) error {
 }
 
 func parseSingleLineReply(msg []byte) (resp.Reply, error) {
+	// 返回不带\r\n的字符串
 	str := strings.TrimSuffix(string(msg), "\r\n")
 	var result resp.Reply
 	switch msg[0] {
